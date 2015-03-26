@@ -11,7 +11,8 @@ install:
 
 #run glytoucan
 run:
-	sudo docker.io run -h cache.glytoucan.org -p 3128:3128 -p 3180:80 --link glyspace_bluetree:glyspace.glytoucan.org --name="glyspacesquid_bluetree" -d aoki/glyspacesquid
+	sudo docker.io run -h cache.glytoucan.org -p 3180:80 -p 3128:3128 --link glyspace_bluetree:glyspace.glytoucan.org --name="glyspacesquid_bluetree" -d aoki/glyspacesquid
+	#sudo docker.io run -h cache.glytoucan.org -p 3128:3128 -p 3180:80 --link glyspace_bluetree:glyspace.glytoucan.org --name="glyspacesquid_bluetree" -d aoki/glyspacesquid
 
 bash:
 	sudo docker.io run -h cache.glytoucan.org --link glyspace_bluetree:glyspace.glytoucan.org -it -p 3129:3128 -p 3181:80 -v /tmp/glyspacesquid:/tmp aoki/glyspacesquid /bin/bash
