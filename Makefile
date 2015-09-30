@@ -1,5 +1,8 @@
+buildbeta:
+	sudo docker build -t aoki/beta.squid .
+
 build:
-	sudo docker build -t aoki/glyspacesquid .
+	sudo docker build -f ./Dockerfile.test -t aoki/glyspacesquid .
 
 buildpull:
 	sudo docker build --pull=true -t aoki/glyspacesquid .
@@ -15,7 +18,7 @@ run:
 	#sudo docker run -h cache.glytoucan.org -p 3128:3128 -p 3180:80 --link glyspace_bluetree:glyspace.glytoucan.org --name="glyspacesquid_bluetree" -d aoki/glyspacesquid
 
 runbeta:
-	sudo docker run -h cache.glytoucan.org -p 3182:80 -p 3130:3128 --link beta.glytoucan:rdf.glytoucan.org --name="beta.squid_bluetree" -d aoki/glyspacesquid
+	sudo docker run -h cache.glytoucan.org -p 3182:80 -p 3130:3128 --link beta.glytoucan:rdf.glytoucan.org --name="beta.squid_bluetree" -d aoki/beta.squid
 
 bash:
 	sudo docker run -h cache.glytoucan.org --link glyspace_bluetree:glyspace.glytoucan.org -it -p 3129:3128 -p 3181:80 -v /tmp/glyspacesquid:/tmp aoki/glyspacesquid /bin/bash
