@@ -12,13 +12,16 @@ buildnocache:
 
 install:
 
+runprod:
+	sudo docker run -h cache.glytoucan.org -p 3182:80 -p 3130:3128 --link prod.glytoucan:rdf.glytoucan.org --name="prod.squid_bluetree" -v /opt/squid/log:/var/log/squid3 -d aoki/beta.squid
+
 #run glytoucan
 run:
 	sudo docker run -h cache.glytoucan.org -p 3180:80 -p 3128:3128 --link glyspace_bluetree:glyspace.glytoucan.org --name="glyspacesquid_bluetree" -d aoki/glyspacesquid
 	#sudo docker run -h cache.glytoucan.org -p 3128:3128 -p 3180:80 --link glyspace_bluetree:glyspace.glytoucan.org --name="glyspacesquid_bluetree" -d aoki/glyspacesquid
 
 runbeta:
-	sudo docker run -h cache.glytoucan.org -p 3182:80 -p 3130:3128 --link beta.glytoucan:rdf.glytoucan.org --name="beta.squid_bluetree" -d aoki/beta.squid
+	sudo docker run -h cache.glytoucan.org -p 3182:80 -p 3130:3128 --link beta.glytoucan:rdf.glytoucan.org --name="beta.squid_bluetree" -v /opt/squid/log:/var/log/squid3 -d aoki/beta.squid
 
 bash:
 	sudo docker run -h cache.glytoucan.org --link glyspace_bluetree:glyspace.glytoucan.org -it -p 3129:3128 -p 3181:80 -v /tmp/glyspacesquid:/tmp aoki/glyspacesquid /bin/bash
@@ -47,6 +50,10 @@ stop:
 rm:
 	sudo docker rm glyspacesquid_bluetree
 
+cleanprod:
+	sudo docker stop prod.squid_bluetree
+	sudo docker rm prod.squid_bluetree
+
 cleanbeta:
 	sudo docker stop beta.squid_bluetree
 	sudo docker rm beta.squid_bluetree
@@ -63,6 +70,9 @@ restart:
 
 logs:
 	sudo docker logs glyspacesquid_bluetree
+
+betalogs:
+	sudo docker logs beta.squid_bluetree
 
 rerun: stop rm run
 
