@@ -1,33 +1,33 @@
-buildbeta:
-	sudo docker build -t aoki/beta.squid .
-
 build:
-	sudo docker build -f ./Dockerfile.test -t aoki/glyspacesquid .
+	sudo docker build -t aoki/rdf.glytoucan-squid .
+
+buildtest:
+	sudo docker build -f ./Dockerfile.test -t aoki/rdf.glytoucan-squid .
 
 buildpull:
-	sudo docker build --pull=true -t aoki/glyspacesquid .
+	sudo docker build --pull=true -t aoki/rdf.glytoucan-squid .
 
 buildnocache:
-	sudo docker build --no-cache=true -t aoki/glyspacesquid .
+	sudo docker build --no-cache=true -t aoki/rdf.glytoucan-squid .
 
 install:
 
 runprod:
-	sudo docker run -h cache.glytoucan.org -p 3182:80 -p 3130:3128 --link prod.glytoucan:rdf.glytoucan.org --name="prod.squid_bluetree" -v /opt/squid/log:/var/log/squid3 -d aoki/beta.squid
+	sudo docker run -h cache.glytoucan.org -p 3182:80 -p 3130:3128 --link prod.glytoucan:rdf.glytoucan.org --name="prod.squid_bluetree" -v /opt/squid/log:/var/log/squid3 -d aoki/rdf.glytoucan-squid
 
 #run glytoucan
 run:
-	sudo docker run -h cache.glytoucan.org -p 3180:80 -p 3128:3128 --link glyspace_bluetree:glyspace.glytoucan.org --name="glyspacesquid_bluetree" -d aoki/glyspacesquid
-	#sudo docker run -h cache.glytoucan.org -p 3128:3128 -p 3180:80 --link glyspace_bluetree:glyspace.glytoucan.org --name="glyspacesquid_bluetree" -d aoki/glyspacesquid
+	sudo docker run -h cache.glytoucan.org -p 3180:80 -p 3128:3128 --link rdf.glytoucan:rdf.glytoucan.org -v /opt/squid/log:/var/log/squid3 --name="rdf.glytoucan-squid_bluetree" -d aoki/rdf.glytoucan-squid
+	#sudo docker run -h cache.glytoucan.org -p 3180:80 -p 3128:3128 --link glyspace_bluetree:glyspace.glytoucan.org --name="rdf.glytoucan-squid_bluetree" -d aoki/rdf.glytoucan-squid
 
 runbeta:
-	sudo docker run -h cache.glytoucan.org -p 3182:80 -p 3130:3128 --link beta.glytoucan:rdf.glytoucan.org --name="beta.squid_bluetree" -v /opt/squid/log:/var/log/squid3 -d aoki/beta.squid
+	sudo docker run -h cache.glytoucan.org -p 3182:80 -p 3130:3128 --link beta.glytoucan:rdf.glytoucan.org --name="rdf.glytoucan-squid_bluetree" -v /opt/squid/log:/var/log/squid3 -d aoki/beta.squid
 
 bash:
-	sudo docker run -h cache.glytoucan.org --link glyspace_bluetree:glyspace.glytoucan.org -it -p 3129:3128 -p 3181:80 -v /tmp/glyspacesquid:/tmp aoki/glyspacesquid /bin/bash
+	sudo docker run -h cache.glytoucan.org --link glyspace_bluetree:glyspace.glytoucan.org -it -p 3129:3128 -p 3181:80 -v /tmp/rdf.glytoucan-squid:/tmp aoki/rdf.glytoucan-squid /bin/bash
 
 backup:
-	sudo docker run --rm --volumes-from glyspacesquid_bluetree -t -i busybox sh
+	sudo docker run --rm --volumes-from rdf.glytoucan-squid_bluetree -t -i busybox sh
 
 clean: stop rm build run
 	echo "clean"
@@ -45,41 +45,41 @@ ps:
 	sudo docker ps
 
 stop:
-	sudo docker stop glyspacesquid_bluetree
+	sudo docker stop rdf.glytoucan-squid_bluetree
 
 rm:
-	sudo docker rm glyspacesquid_bluetree
+	sudo docker rm rdf.glytoucan-squid_bluetree
 
 cleanprod:
 	sudo docker stop prod.squid_bluetree
 	sudo docker rm prod.squid_bluetree
 
 cleanbeta:
-	sudo docker stop beta.squid_bluetree
-	sudo docker rm beta.squid_bluetree
+	sudo docker stop rdf.glytoucan-squid_bluetree
+	sudo docker rm rdf.glytoucan-squid_bluetree
 
 ip:
-	sudo docker inspect -f "{{ .NetworkSettings.IPAddress }}" glyspacesquid_bluetree
+	sudo docker inspect -f "{{ .NetworkSettings.IPAddress }}" rdf.glytoucan-squid_bluetree
 
 ssh:
 #	ssh -i /usr/local/share/baseimage-docker/insecure_key root@172.17.0.8
-	sudo docker-ssh glyspacesquid_bluetree
+	sudo docker-ssh rdf.glytoucan-squid_bluetree
 
 restart:
-	sudo docker restart glyspacesquid_bluetree
+	sudo docker restart rdf.glytoucan-squid_bluetree
 
 logs:
-	sudo docker logs glyspacesquid_bluetree
+	sudo docker logs rdf.glytoucan-squid_bluetree
 
 betalogs:
-	sudo docker logs beta.squid_bluetree
+	sudo docker logs rdf.glytoucan-squid_bluetree
 
 rerun: stop rm run
 
 dump:
-	sudo docker export glyspacesquid_bluetree > glyspacesquid.glycoinfo.tar
+	sudo docker export rdf.glytoucan-squid_bluetree > rdf.glytoucan-squid.glycoinfo.tar
 
 load:
-	cat glyspacesquid.glycoinfo.tar.gz | docker import - aoki/docker-glyspacesquid:glyspacesquid_bluetree
+	cat rdf.glytoucan-squid.glycoinfo.tar.gz | docker import - aoki/docker-rdf.glytoucan-squid:rdf.glytoucan-squid_bluetree
 	
 .PHONY: build run test clean
